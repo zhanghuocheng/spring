@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="1 seconds">
+<!--    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--        <encoder>-->
+<!--            <pattern>%d{HH:mm:ss.SSS} [%thread] %level %logger{35} - %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
+
+    <appender name="siftInfo" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <!--discriminator鉴别器，设置运行时动态属性,siftingAppender根据这个属性来输出日志到不同文件 -->
+        <discriminator>
+            <key>userId</key>
+            <defaultValue>unknown</defaultValue>
+        </discriminator>
+        <sift>
+            <!--具体的写日志appender，每一个userId创建一个文件-->
+            <appender name="FILE-${userId}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <append>true</append>
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{TRACE_ID}] [%thread] %logger{50} - %msg%n</pattern>
+                </encoder>
+
+                <file>./logs/user-${userId}.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                    <!--定义文件滚动时的文件名的格式-->
+                    <fileNamePattern>./logs/%d{yyyyMMdd}/user-${userId}-%i.log</fileNamePattern>
+                    <maxFileSize>500MB</maxFileSize>
+                    <maxHistory>60</maxHistory>
+                    <totalSizeCap>20GB</totalSizeCap>
+                </rollingPolicy>
+
+                <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                    <level>debug</level>
+                </filter>
+            </appender>
+        </sift>
+    </appender>
+
+
+    <root level="debug">
+<!--        <appender-ref ref="console"/>-->
+        <appender-ref ref="siftInfo"/>
+    </root>
+
+</configuration>
