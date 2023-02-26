@@ -1,7 +1,10 @@
-package com.example.demo.logtrace;
+package com.example.demo.logtrace.thred;
 
+import com.example.demo.logtrace.Constants;
+import com.example.demo.logtrace.TraceLogUtils;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.Map;
@@ -9,7 +12,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
-public class LogConf {
+@Configuration
+public class MyExecutor {
 
     @Bean("SpExecutor")
     public Executor getAsyncExecutor() {
